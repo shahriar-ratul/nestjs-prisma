@@ -2,11 +2,11 @@
 	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
 	"formatter": {
 		"enabled": true,
-		"formatWithErrors": false,
+		"formatWithErrors": true,
 		"indentStyle": "space",
-		"indentWidth": 4,
+		"indentWidth": 2,
 		"lineEnding": "lf",
-		"lineWidth": 80,
+		"lineWidth": 120,
 		"attributePosition": "auto",
 		"ignore": [
 			"./node_modules/**",
@@ -14,7 +14,7 @@
 			"./package.json",
 			"./tmp",
 			"./coverage",
-			"./public",
+			"./public/**",
 			"./dist/**",
 			"./test/**"
 		]
@@ -83,5 +83,12 @@
 				}
 			}
 		}
-	]
+	],
+	"files": {
+		"ignore": [
+			"node_modules/**",
+			"dist/**",
+			"test/**"
+		]
+	}
 }

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+// biome-ignore lint/style/useImportType: <explanation>
 import { CreateAdminDto } from './dto/create-admin.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateAdminDto } from './dto/update-admin.dto';
 
 @Injectable()
@@ -9,7 +11,7 @@ export class AdminsService {
     }
 
     findAll() {
-        return `This action returns all admins`;
+        return 'This action returns all admins';
     }
 
     findOne(id: number) {

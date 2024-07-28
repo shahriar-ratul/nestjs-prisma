@@ -1,4 +1,5 @@
-import { ArgumentsHost, Catch, ExceptionFilter, Logger } from '@nestjs/common';
+import { type ArgumentsHost, Catch, type ExceptionFilter, Logger } from '@nestjs/common';
+// biome-ignore lint/style/useImportType: <explanation>
 import { HttpAdapterHost } from '@nestjs/core';
 
 import { BadRequestException } from '../exceptions/bad-request.exception';
@@ -14,7 +15,7 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
      * Constructs a new instance of `BadRequestExceptionFilter`.
      * @param httpAdapterHost - The HttpAdapterHost instance to be used.
      */
-    constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+    constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
 
     /**
      * Handles the `BadRequestException` and transforms it into a JSON response.

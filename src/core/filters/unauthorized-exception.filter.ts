@@ -1,4 +1,5 @@
-import { ArgumentsHost, Catch, ExceptionFilter, Logger } from '@nestjs/common';
+import { type ArgumentsHost, Catch, type ExceptionFilter, Logger } from '@nestjs/common';
+// biome-ignore lint/style/useImportType: <explanation>
 import { HttpAdapterHost } from '@nestjs/core';
 
 import { UnauthorizedException } from '../exceptions/unauthorized.exception';
@@ -10,7 +11,7 @@ import { UnauthorizedException } from '../exceptions/unauthorized.exception';
 export class UnauthorizedExceptionFilter implements ExceptionFilter {
     private readonly logger = new Logger(UnauthorizedExceptionFilter.name);
 
-    constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+    constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
 
     /**
      * Method to handle unauthorized exceptions

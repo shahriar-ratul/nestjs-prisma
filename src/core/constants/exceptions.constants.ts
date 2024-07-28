@@ -1,6 +1,8 @@
 /**
  * This class defines constants for HTTP error codes.
  */
+
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class ExceptionConstants {
     /**
      * Constants for bad request HTTP error codes.

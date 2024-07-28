@@ -1,3 +1,4 @@
+// biome-ignore lint/style/useImportType: <explanation>
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from './prisma.service';
 

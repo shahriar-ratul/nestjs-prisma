@@ -1,12 +1,13 @@
 import {
-    ArgumentsHost,
+    type ArgumentsHost,
     Catch,
-    ExceptionFilter,
+    type ExceptionFilter,
     HttpException,
     HttpStatus,
     Logger,
     NotFoundException,
 } from '@nestjs/common';
+// biome-ignore lint/style/useImportType: <explanation>
 import { HttpAdapterHost } from '@nestjs/core';
 
 /**
@@ -21,7 +22,7 @@ export class NotFoundExceptionFilter implements ExceptionFilter {
      *
      * @param {HttpAdapterHost} httpAdapterHost - the HTTP adapter host
      */
-    constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+    constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
 
     /**
      * Catches an exception and sends an appropriate HTTP response.

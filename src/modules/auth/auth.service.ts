@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+// biome-ignore lint/style/useImportType: <explanation>
 import { CreateAuthDto } from './dto/create-auth.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Injectable()
@@ -9,7 +11,7 @@ export class AuthService {
     }
 
     findAll() {
-        return `This action returns all auth`;
+        return 'This action returns all auth';
     }
 
     findOne(id: number) {

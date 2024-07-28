@@ -8,7 +8,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 
 // Import internal modules
 import { ExceptionConstants } from '../constants/exceptions.constants';
-import {
+import type {
     IException,
     IHttpBadRequestExceptionResponse,
 } from './../interfaces/exceptions.interface';

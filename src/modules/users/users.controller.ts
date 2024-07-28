@@ -7,13 +7,16 @@ import {
     Param,
     Delete,
 } from '@nestjs/common';
+// biome-ignore lint/style/useImportType: <explanation>
 import { UsersService } from './users.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { CreateUserDto } from './dto/create-user.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+    constructor(private readonly usersService: UsersService) { }
 
     @Post()
     create(@Body() createUserDto: CreateUserDto) {
