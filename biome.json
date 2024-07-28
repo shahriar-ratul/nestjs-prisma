@@ -1,0 +1,87 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": false,
+		"indentStyle": "space",
+		"indentWidth": 4,
+		"lineEnding": "lf",
+		"lineWidth": 80,
+		"attributePosition": "auto",
+		"ignore": [
+			"./node_modules/**",
+			"./package-lock.json",
+			"./package.json",
+			"./tmp",
+			"./coverage",
+			"./public",
+			"./dist/**",
+			"./test/**"
+		]
+	},
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"style": {
+				"useImportType": "warn"
+			}
+		},
+		"ignore": [
+			"eslint.config.js",
+			"coverage",
+			"./dist/**",
+			"test",
+			"node_modules",
+			"public",
+			"pnpm-lock.yaml",
+			"pnpm-workspace.yaml",
+			"*.config.js",
+			"*.json",
+			"commitlint.config.js",
+			"jest.preset.js",
+			"jest.config.js",
+			"dist/*",
+			"tsconfig.json",
+			"tsconfig.*.json"
+		]
+	},
+	"javascript": {
+		"formatter": {
+			"jsxQuoteStyle": "double",
+			"quoteProperties": "asNeeded",
+			"trailingCommas": "es5",
+			"semicolons": "always",
+			"arrowParentheses": "always",
+			"bracketSpacing": true,
+			"bracketSameLine": false,
+			"quoteStyle": "single",
+			"attributePosition": "auto"
+		},
+		"parser": {
+			"unsafeParameterDecoratorsEnabled": true
+		},
+		"globals": []
+	},
+	"overrides": [
+		{
+			"include": [
+				"*.ts",
+				"*.tsx"
+			],
+			"javascript": {
+				"globals": []
+			},
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noExplicitAny": "off"
+					}
+				}
+			}
+		}
+	]
+}

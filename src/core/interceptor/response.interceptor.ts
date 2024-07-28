@@ -1,9 +1,10 @@
 import {
     Injectable,
-    NestInterceptor,
-    ExecutionContext,
-    CallHandler,
+    type NestInterceptor,
+    type ExecutionContext,
+    type CallHandler,
 } from '@nestjs/common';
+// biome-ignore lint/style/useImportType: <explanation>
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 

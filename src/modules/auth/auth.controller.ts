@@ -7,13 +7,16 @@ import {
     Param,
     Delete,
 } from '@nestjs/common';
+// biome-ignore lint/style/useImportType: <explanation>
 import { AuthService } from './auth.service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { CreateAuthDto } from './dto/create-auth.dto';
+// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthService) { }
 
     @Post()
     create(@Body() createAuthDto: CreateAuthDto) {

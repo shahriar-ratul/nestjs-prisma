@@ -1,4 +1,4 @@
-import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
+import { type ExceptionFilter, Catch, type ArgumentsHost } from '@nestjs/common';
 
 @Catch()
 export class ErrorFilter implements ExceptionFilter {
@@ -20,11 +20,11 @@ export class ErrorFilter implements ExceptionFilter {
         }
 
         // convert all message to array
-        if (typeof message == 'string') {
+        if (typeof message === 'string') {
             message = [message];
         }
 
-        if (exception.status == 429) {
+        if (exception.status === 429) {
             message = 'Too many requests';
         }
         const errorResponse: Response<any> = {

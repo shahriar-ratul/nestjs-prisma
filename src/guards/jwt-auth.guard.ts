@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-    ExecutionContext,
+    type ExecutionContext,
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
+// biome-ignore lint/style/useImportType: <explanation>
 import { Reflector } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
+import type { JwtService } from '@nestjs/jwt';
 
 import 'dotenv/config';
 
-import { Request } from 'express';
+import type { Request } from 'express';
 import { IS_PUBLIC_KEY } from 'src/core/decorator';
 
 @Injectable()
-// eslint-disable-next-line @darraghor/nestjs-typed/injectable-should-be-provided
 export class JwtAuthGuard extends AuthGuard('jwt') {
     constructor(
         // private TokenService: TokenService,

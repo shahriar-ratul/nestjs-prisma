@@ -1,4 +1,5 @@
-import { ArgumentsHost, Catch, ExceptionFilter, Logger } from '@nestjs/common';
+import { type ArgumentsHost, Catch, type ExceptionFilter, Logger } from '@nestjs/common';
+// biome-ignore lint/style/useImportType: <explanation>
 import { HttpAdapterHost } from '@nestjs/core';
 
 import { ForbiddenException } from '../exceptions';
@@ -10,7 +11,7 @@ import { ForbiddenException } from '../exceptions';
 export class ForbiddenExceptionFilter implements ExceptionFilter {
     private readonly logger = new Logger(ForbiddenExceptionFilter.name);
 
-    constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+    constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
 
     /**
      * Method to handle unauthorized exceptions

@@ -1,6 +1,6 @@
 import slugify from 'slugify';
 
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
 // Generate slug
 export function generateSlug(input: string): string {
@@ -80,8 +80,8 @@ export const generateSku = (countSku: number): string => {
     // const timeStamp = date.getTime(); // 1594590955933
     // convert to 5 digit number
     // Convert the number to a string
-    countSku = countSku + 1;
-    const numStr = countSku.toString();
+    const newCountSku = countSku + 1;
+    const numStr = newCountSku.toString();
     // Pad the number with zeros to 5 digits
     const paddedNumStr = numStr.padStart(5, '0');
 
@@ -91,5 +91,5 @@ export const generateSku = (countSku: number): string => {
 
 // convert two decimal point number
 export const convertTwoDecimal = (number: number): number => {
-    return parseFloat(number.toFixed(2));
+    return Number.parseFloat(number.toFixed(2));
 };

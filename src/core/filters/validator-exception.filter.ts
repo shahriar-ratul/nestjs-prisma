@@ -1,10 +1,11 @@
 import {
-    ArgumentsHost,
+    type ArgumentsHost,
     Catch,
-    ExceptionFilter,
+    type ExceptionFilter,
     HttpStatus,
     Logger,
 } from '@nestjs/common';
+// biome-ignore lint/style/useImportType: <explanation>
 import { HttpAdapterHost } from '@nestjs/core';
 import { ValidationError } from 'class-validator';
 
@@ -17,7 +18,7 @@ import { BadRequestException } from '../exceptions/bad-request.exception';
 export class ValidationExceptionFilter implements ExceptionFilter {
     private readonly logger = new Logger(ValidationExceptionFilter.name);
 
-    constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+    constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
 
     /**
      * Handle a validation error.

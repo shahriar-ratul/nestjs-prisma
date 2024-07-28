@@ -1,5 +1,6 @@
 // Importing required modules and classes from NestJS
-import { ArgumentsHost, Catch, ExceptionFilter, Logger } from '@nestjs/common';
+import { type ArgumentsHost, Catch, type ExceptionFilter, Logger } from '@nestjs/common';
+// biome-ignore lint/style/useImportType: <explanation>
 import { HttpAdapterHost } from '@nestjs/core';
 
 import { InternalServerErrorException } from '../exceptions/internal-server-error.exception';
@@ -15,7 +16,7 @@ export class InternalServerErrorExceptionFilter implements ExceptionFilter {
      * Constructs a new instance of `InternalServerErrorExceptionFilter`.
      * @param httpAdapterHost - The HttpAdapterHost instance to be used.
      */
-    constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+    constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
 
     /**
      * Handles the `InternalServerErrorException` and transforms it into a JSON response.
