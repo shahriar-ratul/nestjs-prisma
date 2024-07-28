@@ -1,0 +1,12 @@
+echo "${CHECKS_RUN}"
+echo $CHECKS_RUN
+
+if [ -z "${CHECKS_RUN}" ]; then
+    echo "Pre-commit checks will start as it is a manual commit"
+    npx lint-staged --concurrent=false
+    # npx validate-branch-name
+else
+    echo "Skipping Pre-commit checks as they already executed"
+fi
+# pnpm test
+pnpm lint-staged
