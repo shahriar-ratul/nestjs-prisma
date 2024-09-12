@@ -1,7 +1,8 @@
-Dockerfile
 .dockerignore
 node_modules
 npm-debug.log
 dist
 pgdata
 postgres_data
+*.md
+.gitignore
