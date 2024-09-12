@@ -40,9 +40,11 @@
         "cookie-parser": "^1.4.6",
         "dotenv": "^16.4.5",
         "joi": "^17.13.3",
+        "nestjs-pino": "^4.1.0",
         "passport": "^0.7.0",
         "passport-jwt": "^4.0.1",
         "pg": "^8.12.0",
+        "pino-http": "^10.2.0",
         "postgres": "^3.4.4",
         "prisma": "^5.17.0",
         "reflect-metadata": "^0.2.2",
@@ -101,5 +103,6 @@
     },
     "prisma": {
         "seed": "ts-node prisma/seed.ts"
-    }
+    },
+    "packageManager": "pnpm@9.10.0+sha512.73a29afa36a0d092ece5271de5177ecbf8318d454ecd701343131b8ebc0c1a91c487da46ab77c8e596d6acf1461e3594ced4becedf8921b074fbd8653ed7051c"
 }
