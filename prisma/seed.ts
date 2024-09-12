@@ -5,7 +5,7 @@ import { adminData } from './seedData/admin';
 import * as bcrypt from 'bcrypt';
 import { faker } from '@faker-js/faker';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 
 async function main() {
@@ -27,7 +27,7 @@ async function main() {
   }
 
   for (const roleItem of roleData) {
-    const { name, slug, description, percentage } = roleItem;
+    const { name, slug, description, displayName, isActive } = roleItem;
 
     const roleExists = await prisma.role.findFirst({
       where: {
@@ -41,7 +41,9 @@ async function main() {
           name,
           slug,
           description,
-          percentage: percentage || 0,
+          displayName,
+          isActive
+
         },
       });
 
@@ -51,13 +53,6 @@ async function main() {
             NOT: {
               slug: {
                 in: [
-                  'streamer.dashboard',
-                  'user.dashboard',
-                  'marketplace.view',
-                  'streamer-discount.view',
-                  'streamer-discount.create',
-                  'streamer-discount.delete',
-                  'consign-to.approve',
                 ]
               }
             }
@@ -108,7 +103,7 @@ async function main() {
       const roles = await prisma.role.findMany({
         where: {
           NOT: {
-            slug: "streamer"
+            slug: "user" 
           }
         }
       });
@@ -145,7 +140,7 @@ async function main() {
 
     const userRole = await prisma.role.findFirst({
       where: {
-        slug: 'streamer',
+        slug: 'user',
       },
     });
 
@@ -160,7 +155,7 @@ async function main() {
 
 
     // make 
-    console.log(`Created streamer with email: ${user.email}`);
+    console.log(`Created user with email: ${user.email}`);
   }
 
   console.log('Seeding finished.');

@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // postgresql mysql
+  provider = "mysql" // postgresql mysql
   url      = env("DATABASE_URL")
 }
 
@@ -35,14 +35,17 @@ model Admin {
 
   roles       AdminRole[]
   permissions AdminPermission[]
-  tokens      Token[]
+  tokens      AdminToken[]
 }
 
 model Permission {
   id        Int               @id @default(autoincrement())
   name      String            @unique
+  displayName String?
   slug      String            @unique
   group     String
+  description String?
+  isActive  Boolean           @default(true)
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
   roles     PermissionRole[]
@@ -52,6 +55,7 @@ model Permission {
 model Role {
   id          Int      @id @default(autoincrement())
   name        String   @unique
+  displayName String?
   slug        String   @unique
   description String?
   isActive    Boolean  @default(true)
@@ -60,8 +64,6 @@ model Role {
 
   permissions PermissionRole[]
   admins      AdminRole[]
-
-  percentage Float @default(0)
 }
 
 model PermissionRole {
@@ -100,7 +102,7 @@ model AdminPermission {
   @@id([adminId, permissionId])
 }
 
-model Token {
+model AdminToken {
   id           Int       @id @default(autoincrement())
   admin        Admin     @relation(fields: [adminId], references: [id], onDelete: Cascade)
   adminId      Int
