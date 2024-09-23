@@ -92,7 +92,7 @@ CREATE TABLE `AdminToken` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `adminId` INTEGER NOT NULL,
     `token` VARCHAR(191) NOT NULL,
-    `refreshToken` VARCHAR(191) NOT NULL,
+    `refreshToken` VARCHAR(191) NULL,
     `ip` VARCHAR(191) NULL,
     `userAgent` VARCHAR(191) NULL,
     `expiresAt` DATETIME(3) NULL,

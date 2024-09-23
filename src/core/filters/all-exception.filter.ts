@@ -6,7 +6,6 @@ import {
     HttpStatus,
     Logger,
 } from '@nestjs/common';
-// biome-ignore lint/style/useImportType: <explanation>
 import { HttpAdapterHost } from '@nestjs/core';
 
 /**

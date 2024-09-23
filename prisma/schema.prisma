@@ -107,7 +107,7 @@ model AdminToken {
   admin        Admin     @relation(fields: [adminId], references: [id], onDelete: Cascade)
   adminId      Int
   token        String
-  refreshToken String
+  refreshToken String?
   ip           String?
   userAgent    String?
   expiresAt    DateTime?

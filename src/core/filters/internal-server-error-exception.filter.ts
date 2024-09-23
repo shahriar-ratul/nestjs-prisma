@@ -1,6 +1,5 @@
 // Importing required modules and classes from NestJS
 import { type ArgumentsHost, Catch, type ExceptionFilter, Logger } from '@nestjs/common';
-// biome-ignore lint/style/useImportType: <explanation>
 import { HttpAdapterHost } from '@nestjs/core';
 
 import { InternalServerErrorException } from '../exceptions/internal-server-error.exception';

@@ -1,45 +1,65 @@
 import {
+    Body,
     Controller,
     Get,
+    HttpCode,
+    HttpStatus,
     Post,
-    Body,
-    Patch,
-    Param,
-    Delete,
+    Req,
+    UseGuards,
 } from '@nestjs/common';
-// biome-ignore lint/style/useImportType: <explanation>
-import { AuthService } from './auth.service';
-// biome-ignore lint/style/useImportType: <explanation>
-import { CreateAuthDto } from './dto/create-auth.dto';
-// biome-ignore lint/style/useImportType: <explanation>
-import { UpdateAuthDto } from './dto/update-auth.dto';
 
+import { AuthService } from './auth.service';
+import { LoginDto } from './dto/login.dto';
+import { Request } from 'express';
+import { Public } from '@/core/decorator';
+import { SkipThrottle } from '@nestjs/throttler';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) { }
+    constructor(private _authService: AuthService) { }
 
-    @Post()
-    create(@Body() createAuthDto: CreateAuthDto) {
-        return this.authService.create(createAuthDto);
+    /**
+     * Login users
+     */
+    @SkipThrottle()
+    @HttpCode(HttpStatus.OK)
+    @Post('login')
+    @ApiResponse({
+        status: 200,
+        description: 'Login Successful',
+    })
+    @Public()
+    async login(
+        @Body() credential: LoginDto,
+        @Req() request: Request,
+        // @Res({ passthrough: true }) response: Response,
+    ): Promise<any> {
+        return await this._authService.login(credential, request);
     }
 
-    @Get()
-    findAll() {
-        return this.authService.findAll();
+    @SkipThrottle()
+    @UseGuards(JwtAuthGuard)
+    @ApiResponse({
+        status: 200,
+        description: 'Get Profile Successful',
+    })
+    @Get('profile')
+    async getProfile(@Req() req: Request) {
+        return await this._authService.getProfile(req);
     }
 
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.authService.findOne(+id);
-    }
-
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-        return this.authService.update(+id, updateAuthDto);
-    }
-
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.authService.remove(+id);
+    @SkipThrottle()
+    @UseGuards(JwtAuthGuard)
+    @ApiResponse({
+        status: 200,
+        description: 'Verify Successful',
+    })
+    @Get('verify')
+    async verify(@Req() req: Request) {
+        return await this._authService.verifyToken(req);
     }
 }

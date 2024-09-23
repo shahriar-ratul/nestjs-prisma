@@ -1,4 +1,4 @@
-// biome-ignore lint/style/useImportType: <explanation>
+
 import { HttpStatus } from '@nestjs/common';
 
 export interface IResponseMetadata {

@@ -1,5 +1,4 @@
 import { type ArgumentsHost, Catch, type ExceptionFilter, Logger } from '@nestjs/common';
-// biome-ignore lint/style/useImportType: <explanation>
 import { HttpAdapterHost } from '@nestjs/core';
 
 import { BadRequestException } from '../exceptions/bad-request.exception';

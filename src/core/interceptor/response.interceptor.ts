@@ -4,7 +4,6 @@ import {
     type ExecutionContext,
     type CallHandler,
 } from '@nestjs/common';
-// biome-ignore lint/style/useImportType: <explanation>
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 

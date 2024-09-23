@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-// biome-ignore lint/style/useImportType: <explanation>
 import { CreateUserDto } from './dto/create-user.dto';
-// biome-ignore lint/style/useImportType: <explanation>
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()

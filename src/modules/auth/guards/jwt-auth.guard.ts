@@ -1,26 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-    type ExecutionContext,
+    ExecutionContext,
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-// biome-ignore lint/style/useImportType: <explanation>
 import { Reflector } from '@nestjs/core';
-import type { JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
+import { IS_PUBLIC_KEY } from '@/core/decorator';
 
 import 'dotenv/config';
+import { TokenService } from '@/modules/admins/token/token.service';
 
-import type { Request } from 'express';
-import { IS_PUBLIC_KEY } from 'src/core/decorator';
+import { Request } from 'express';
 
 @Injectable()
+// eslint-disable-next-line @darraghor/nestjs-typed/injectable-should-be-provided
 export class JwtAuthGuard extends AuthGuard('jwt') {
     constructor(
-        // private TokenService: TokenService,
+        private TokenService: TokenService,
         private jwtService: JwtService,
-        private reflector: Reflector
+        private reflector: Reflector,
     ) {
         super();
     }
@@ -29,10 +30,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         const ctx = context.switchToHttp();
         const request = ctx.getRequest<Request>();
 
-        const isPublic = this.reflector.getAllAndOverride<boolean>(
-            IS_PUBLIC_KEY,
-            [context.getHandler(), context.getClass()]
-        );
+        const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+            context.getHandler(),
+            context.getClass(),
+        ]);
 
         if (isPublic) {
             // 💡 See this condition
@@ -57,10 +58,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
         if (token) {
             // check token is exist in database or not
-            // const isRevoked = await this.TokenService.isRevokedToken(token);
-            // if (isRevoked) {
-            //   throw new UnauthorizedException();
-            // }
+            const isRevoked = await this.TokenService.isRevokedToken(token);
+
+            if (isRevoked) {
+                throw new UnauthorizedException();
+            }
         }
 
         return super.canActivate(context) as Promise<boolean>;
