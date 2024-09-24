@@ -16,7 +16,8 @@
 			"./coverage",
 			"./public/**",
 			"./dist/**",
-			"./test/**"
+			"./test/**",
+			"./logs/**"
 		]
 	},
 	"organizeImports": {

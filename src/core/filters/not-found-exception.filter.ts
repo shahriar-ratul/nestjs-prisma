@@ -1,3 +1,4 @@
+
 import {
     type ArgumentsHost,
     Catch,
@@ -5,18 +6,19 @@ import {
     HttpException,
     HttpStatus,
     Logger,
+    NotFoundException,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
 /**
  * Catches all exceptions thrown by the application and sends an appropriate HTTP response.
  */
-@Catch()
-export class AllExceptionsFilter implements ExceptionFilter {
-    private readonly logger = new Logger(AllExceptionsFilter.name);
+@Catch(NotFoundException)
+export class NotFoundExceptionFilter implements ExceptionFilter {
+    private readonly logger = new Logger(NotFoundExceptionFilter.name);
 
     /**
-     * Creates an instance of `AllExceptionsFilter`.
+     * Creates an instance of `NotFoundExceptionFilter`.
      *
      * @param {HttpAdapterHost} httpAdapterHost - the HTTP adapter host
      */
@@ -31,7 +33,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
      */
     catch(exception: any, host: ArgumentsHost): void {
         // Log the exception.
-        this.logger.error(exception);
 
         // In certain situations `httpAdapter` might not be available in the
         // constructor method, thus we should resolve it here.
@@ -45,13 +46,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
                 : HttpStatus.INTERNAL_SERVER_ERROR;
 
         const request = ctx.getRequest();
+
         // Construct the response body.
         const responseBody = {
-            success: false,
             error: exception.code,
             message: exception.message,
             description: exception.description,
-            timestamp: new Date().toISOString(),
             traceId: request.id,
         };
 
