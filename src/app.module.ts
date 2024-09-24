@@ -14,9 +14,10 @@ import { AdminsModule } from './modules/admins/admins.module';
 import { UsersModule } from './modules/users/users.module';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE, Reflector } from '@nestjs/core';
 import { ResponseInterceptor } from '@/core/interceptor';
-import { AllExceptionsFilter, BadRequestExceptionFilter, ErrorFilter, ForbiddenExceptionFilter, NotFoundExceptionFilter, UnauthorizedExceptionFilter, ValidationExceptionFilter } from '@/core/filters';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { LoggerMiddleware } from '@/core/middleware/logger.middleware';
+import { AllExceptionsFilter, ErrorFilter } from '@/core/filters';
+import { RequestLoggerMiddleware } from './core/middleware/request-logger.middleware';
 
 @Module({
     imports: [
@@ -82,11 +83,6 @@ import { LoggerMiddleware } from '@/core/middleware/logger.middleware';
             useClass: JwtAuthGuard,
         },
         { provide: APP_FILTER, useClass: AllExceptionsFilter },
-        { provide: APP_FILTER, useClass: ValidationExceptionFilter },
-        { provide: APP_FILTER, useClass: BadRequestExceptionFilter },
-        { provide: APP_FILTER, useClass: UnauthorizedExceptionFilter },
-        { provide: APP_FILTER, useClass: ForbiddenExceptionFilter },
-        { provide: APP_FILTER, useClass: NotFoundExceptionFilter },
         {
             provide: APP_PIPE,
             useFactory: () =>
@@ -106,6 +102,7 @@ import { LoggerMiddleware } from '@/core/middleware/logger.middleware';
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(LoggerMiddleware).forRoutes('*');
+        consumer.apply(RequestLoggerMiddleware).forRoutes('*');
     }
 }
 

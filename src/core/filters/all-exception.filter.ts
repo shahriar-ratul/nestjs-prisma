@@ -47,11 +47,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
         const request = ctx.getRequest();
         // Construct the response body.
         const responseBody = {
+            success: false,
+            statusCode: exception.getStatus(),
             error: exception.code,
             message: exception.message,
-            description: exception.description,
-            timestamp: new Date().toISOString(),
-            traceId: request.id,
+            data: {
+                message: exception.message,
+            },
+            timestamp: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            traceId: request.id || 'N/A',
         };
 
         // Send the HTTP response.

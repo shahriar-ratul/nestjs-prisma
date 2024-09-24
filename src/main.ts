@@ -12,6 +12,7 @@ import {
     VersioningType,
 } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import customLogger from './core/utils/logger';
 
 async function bootstrap() {
     // Load environment variables from .env file
@@ -25,6 +26,7 @@ async function bootstrap() {
 
     const app = await NestFactory.create<NestExpressApplication>(AppModule, {
         rawBody: true,
+        logger: customLogger,
     });
 
     app.use(cookieParser());
