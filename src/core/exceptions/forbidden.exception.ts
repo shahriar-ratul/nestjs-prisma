@@ -9,6 +9,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 // Import internal modules
 import { ExceptionConstants } from '../constants/exceptions.constants';
 import { ErrorResponse, IException } from '../interfaces/response.interfaces';
+import { format } from 'date-fns';
 
 
 /**
@@ -21,7 +22,7 @@ export class ForbiddenException extends HttpException {
         description: 'You do not have permission to perform this action.',
         example: ExceptionConstants.ForbiddenCodes.MISSING_PERMISSIONS,
     })
-    code: number;
+    statusCode: number;
 
     /** The error that caused this exception. */
     @ApiHideProperty()
@@ -72,8 +73,8 @@ export class ForbiddenException extends HttpException {
         this.message = exception.message;
         this.cause = exception.cause;
         this.description = exception.description;
-        this.code = exception.statusCode;
-        this.timestamp = new Date().toISOString();
+        this.statusCode = exception.statusCode;
+        this.timestamp = format(new Date(), 'yyyy-MM-dd HH:mm:ss a');
     }
 
     /**
@@ -94,7 +95,10 @@ export class ForbiddenException extends HttpException {
     ): ErrorResponse => {
         return {
             success: false,
-            statusCode: this.code,
+            statusCode: this.statusCode,
+            data: {
+                error: this.cause,
+            },
             message: message || this.message,
             timestamp: this.timestamp,
 
@@ -112,6 +116,7 @@ export class ForbiddenException extends HttpException {
             success: false,
             message: msg || 'Access to this resource is forbidden.',
             statusCode: ExceptionConstants.ForbiddenCodes.FORBIDDEN,
+
         });
     };
 

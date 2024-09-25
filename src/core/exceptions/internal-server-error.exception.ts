@@ -4,6 +4,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 // Import internal files & modules
 import { ExceptionConstants } from '../constants/exceptions.constants';
 import { ErrorResponse, IException } from '../interfaces/response.interfaces';
+import { format } from 'date-fns';
 
 
 // Exception class for Internal Server Error
@@ -62,7 +63,7 @@ export class InternalServerErrorException extends HttpException {
         this.cause = exception.cause;
         this.description = exception.description;
         this.code = exception.statusCode;
-        this.timestamp = new Date().toISOString();
+        this.timestamp = format(new Date(), 'yyyy-MM-dd hh:mm:ss a')
     }
 
     /**

@@ -2,6 +2,8 @@ import { type ArgumentsHost, Catch, type ExceptionFilter, Logger } from '@nestjs
 import { HttpAdapterHost } from '@nestjs/core';
 
 import { ForbiddenException } from '../exceptions';
+import { ErrorResponse } from '../interfaces/response.interfaces';
+import { format } from 'date-fns';
 
 /**
  * Exception filter to handle unauthorized exceptions
@@ -38,6 +40,12 @@ export class ForbiddenExceptionFilter implements ExceptionFilter {
         const responseBody = exception.generateHttpResponseBody();
 
         // Uses the HTTP adapter to send the response with the constructed response body
+
+
+        this.logger.error(exception);
+
+
+
         // and the HTTP status code.
         httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
     }

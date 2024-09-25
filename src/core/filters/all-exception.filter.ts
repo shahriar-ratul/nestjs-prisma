@@ -52,7 +52,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
             message: exception.message,
             description: exception.description,
             timestamp: new Date().toISOString(),
-            traceId: request.id,
         };
 
         // Send the HTTP response.

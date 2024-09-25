@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, ForbiddenException, Get, UnauthorizedException } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from '@/core/decorator';
@@ -16,6 +16,9 @@ export class AppController {
     @Public()
     @ApiResponse({})
     async getHello(): Promise<string> {
+
+        throw new ForbiddenException();
+
         return await this.appService.getHello();
     }
 }
