@@ -73,7 +73,7 @@ export class RolesController {
 
     @Post(':id/status')
     @ApiResponse({})
-    @SetMetadata('permissions', ['role.active'])
+    @SetMetadata('permissions', ['role.status'])
     async changeStatus(@Param('id') id: number) {
         return this._rolesService.changeStatus(+id);
     }

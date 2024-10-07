@@ -13,6 +13,10 @@ import {
 } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import customLogger from './core/utils/logger';
+import { AsyncLocalStorage } from 'node:async_hooks';
+import { v4 as uuidv4 } from 'uuid';
+
+const asyncLocalStorage = new AsyncLocalStorage<{ requestId: string }>();
 
 async function bootstrap() {
     // Load environment variables from .env file
@@ -26,8 +30,9 @@ async function bootstrap() {
 
     const app = await NestFactory.create<NestExpressApplication>(AppModule, {
         rawBody: true,
-        logger: customLogger,
+        // logger: customLogger,
     });
+
 
     app.use(cookieParser());
     app.useBodyParser('json', { limit: '20mb' });
@@ -82,11 +87,20 @@ async function bootstrap() {
         SwaggerModule.setup('docs', app, document);
     }
 
-    // Log each request
-    app.use((req: any, res: any, next: any) => {
-        logger.log(`Request ${req.method} ${req.originalUrl}`);
-        next();
-    });
+    // Move this middleware to the top of the middleware chain
+    // app.use((req, res, next) => {
+    //     const requestId = uuidv4();
+    //     asyncLocalStorage.run({ requestId }, () => {
+    //         next();
+    //     });
+    // });
+
+    // Update the logging middleware to use the requestId from asyncLocalStorage
+    // app.use((req: any, res: any, next: any) => {
+    //     const { requestId } = asyncLocalStorage.getStore() || { requestId: 'N/A' };
+    //     logger.log(`Request ${req.method} ${req.originalUrl}`, { requestId });
+    //     next();
+    // });
 
     (app as any).set('etag', false);
 

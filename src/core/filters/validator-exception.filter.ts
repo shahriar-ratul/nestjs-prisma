@@ -40,6 +40,7 @@ export class ValidationExceptionFilter implements ExceptionFilter {
         // Example of fetching path to attach path inside response object
         // const path = httpAdapter.getRequestUrl(request);
 
+        this.logger.log(exception);
 
         let errorMsg: string[] = [];
 

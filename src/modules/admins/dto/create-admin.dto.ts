@@ -1,8 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
     ArrayNotEmpty,
     IsArray,
     IsBoolean,
+    IsDate,
     IsEmail,
     IsNotEmpty,
     IsOptional,
@@ -77,15 +79,58 @@ export class CreateAdminDto {
         description: 'admin isActive',
     })
     // @IsNotEmpty()
+    @Transform(({ value }) => value.toString() === 'true')
     @IsOptional()
     @IsBoolean()
     isActive: boolean;
+
+    // dob
+    @ApiProperty({
+        type: 'string',
+        example: '2024-01-01',
+        description: 'admin dob',
+    })
+    @Transform(({ value }) => {
+        if (typeof value === 'string') {
+            const date = JSON.parse(value);
+            return new Date(date);
+        }
+        return value;
+    })
+    @IsOptional()
+    @IsDate()
+    dob: Date;
+
+    // joinedDate
+    @ApiProperty({
+        type: 'string',
+        example: '2024-01-01',
+        description: 'admin joinedDate',
+    })
+    @Transform(({ value }) => {
+        if (typeof value === 'string') {
+            const date = JSON.parse(value);
+            return new Date(date);
+        }
+        return value;
+    })
+    @IsOptional()
+    @IsDate()
+    joinedDate: Date;
+
 
     @ApiProperty({
         type: 'array',
         example: 'roles',
         description: 'admin roles',
         isArray: true,
+    })
+    @Transform(({ value }) => {
+        if (typeof value === 'string') {
+            const roles = JSON.parse(value);
+            return roles.map((role: string) => Number(role));
+        }
+        return value;
     })
     @IsArray()
     @ArrayNotEmpty({

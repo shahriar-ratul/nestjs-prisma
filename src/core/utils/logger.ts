@@ -1,6 +1,9 @@
 import { WinstonModule } from 'nest-winston';
 import { format, transports } from "winston";
 import 'winston-daily-rotate-file';
+import { AsyncLocalStorage } from 'node:async_hooks';
+
+const asyncLocalStorage = new AsyncLocalStorage<{ requestId: string }>();
 
 const { combine, timestamp, printf } = format;
 
@@ -25,28 +28,30 @@ function stringify(obj) {
 }
 
 // Custom format for console logging
-const consoleLogFormat = printf(({ level, message, timestamp, ...rest }) => {
-
-    // let requestId = httpContext.get('requestId');
-
-    // rest have any requestID
-    // if (rest.requestId) {
-    //     requestId = rest.requestId;
-    //     delete rest.requestId;
-    // }
-
-
+const consoleLogFormat = printf(({ level, message, timestamp, requestId, ...rest }) => {
     const response = {
-        level: level,
+        level,
         timestamp,
-        requestId: "N/A",
-        message: message,
-        data: { ...rest },
+        requestId,
+        message,
+        data: { ...rest }
     };
 
     return stringify(response);
 });
 
+const requestIdFormat = format((info) => {
+    const store = asyncLocalStorage.getStore();
+    if (store?.requestId) {
+        info.requestId = store.requestId;
+    } else if (info.context?.requestId) {
+        info.requestId = info.context.requestId;
+    } else {
+        info.requestId = 'N/A';
+    }
+    info.context = undefined; // Remove context to avoid duplication
+    return info;
+});
 
 const errorTransport = new transports.DailyRotateFile({
     filename: 'logs/%DATE%-error.log',
@@ -55,7 +60,7 @@ const errorTransport = new transports.DailyRotateFile({
     maxSize: '50m',
     maxFiles: '30d',
     level: 'error',
-    format: format.combine(format.timestamp(), format.json()),
+    format: format.combine(requestIdFormat(), format.timestamp(), format.json()),
 });
 
 const dailyRotateFileTransport = new transports.DailyRotateFile({
@@ -64,17 +69,16 @@ const dailyRotateFileTransport = new transports.DailyRotateFile({
     zippedArchive: true,
     maxSize: '20m',
     maxFiles: '30d',
+    format: format.combine(requestIdFormat(), format.timestamp(), format.json()),
 });
 
 const combinedTransport = new transports.DailyRotateFile({
     filename: 'logs/%DATE%-combined.log',
-    format: format.combine(format.timestamp(), format.json()),
+    format: format.combine(requestIdFormat(), format.timestamp(), format.json()),
     datePattern: 'YYYY-MM-DD',
     zippedArchive: false,
     maxFiles: '30d',
 });
-
-
 
 const customLogger = WinstonModule.createLogger({
     transports: [
@@ -82,19 +86,12 @@ const customLogger = WinstonModule.createLogger({
         combinedTransport,
         dailyRotateFileTransport,
         new transports.Console({
-            format: consoleLogFormat,  // Format for the console output
+            format: combine(
+                timestamp({ format: timestampFormat }),
+                requestIdFormat(),
+                consoleLogFormat
+            ),
         }),
-        // new transports.Console({
-        //     format: format.combine(
-        //         format.colorize(),
-        //         format.cli(),
-        //         format.splat(),
-        //         format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss A' }),
-        //         format.printf((info) => {
-        //             return `${info.timestamp} ${info.level}: ${info.message}`;
-        //         }),
-        //     ),
-        // }),
     ],
 })
 

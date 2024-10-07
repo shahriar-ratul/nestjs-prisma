@@ -127,7 +127,7 @@ async function main() {
 
   // Create 100 users
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 1000; i++) {
     const user = await prisma.admin.create({
       data: {
         email: faker.internet.email(),

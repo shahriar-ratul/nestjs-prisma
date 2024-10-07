@@ -78,7 +78,7 @@ export class RolesService {
     }
 
     async findOne(id: number) {
-        return await this._prisma.role.findUnique({
+        const item = await this._prisma.role.findUnique({
             where: {
                 id: id,
             },
@@ -99,6 +99,11 @@ export class RolesService {
                 },
             },
         });
+
+        return {
+            message: 'Role fetched successfully',
+            item: item,
+        };
     }
 
     async create(createRoleDto: CreateRoleDto) {
@@ -122,7 +127,7 @@ export class RolesService {
             data: {
                 name: createRoleDto.name,
                 slug: slug,
-                isActive: createRoleDto.is_active,
+                isActive: createRoleDto.isActive,
             },
         });
 
@@ -132,7 +137,7 @@ export class RolesService {
                 await this._prisma.permissionRole.create({
                     data: {
                         roleId: role.id,
-                        permissionId: permission,
+                        permissionId: Number(permission),
                     },
                 });
             }
@@ -159,12 +164,11 @@ export class RolesService {
     }
 
     async update(id: number, updateRoleDto: UpdateRoleDto) {
-        console.log(updateRoleDto);
+
         // convert name to slug
         const slug = generateSlug(updateRoleDto.name);
 
         // update role not working
-
         const role = await this._prisma.role.findUnique({
             where: {
                 id: id,
@@ -199,7 +203,7 @@ export class RolesService {
             data: {
                 name: updateRoleDto.name,
                 slug: slug,
-                isActive: updateRoleDto.is_active,
+                isActive: updateRoleDto.isActive,
             },
         });
 
@@ -217,7 +221,7 @@ export class RolesService {
                 await this._prisma.permissionRole.create({
                     data: {
                         roleId: id,
-                        permissionId: permission,
+                        permissionId: Number(permission),
                     },
                 });
             }
@@ -262,8 +266,6 @@ export class RolesService {
         if (role.admins.length > 0) {
             throw new HttpException('Role is in use it cannot be deleted', HttpStatus.BAD_REQUEST);
         }
-
-
 
 
         // superadmin role cannot be deleted
@@ -326,6 +328,9 @@ export class RolesService {
     async getAllRoles() {
 
         const roles = await this._prisma.role.findMany({
+            where: {
+                isActive: true,
+            },
             orderBy: {
                 name: 'asc',
             },
@@ -333,7 +338,7 @@ export class RolesService {
 
         return {
             message: 'Roles fetched successfully',
-            roles: roles,
+            items: roles,
         };
     }
 }

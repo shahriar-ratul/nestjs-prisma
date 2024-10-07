@@ -4,6 +4,7 @@ import { CreatePermissionDto } from '../dto/create-permission.dto';
 import { PrismaService } from '@/modules/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { PermissionResponse } from '../interface/PermissionResponse';
+import { UpdatePermissionDto } from '../dto/update-permission.dto';
 
 @Injectable()
 export class PermissionsService {
@@ -103,14 +104,104 @@ export class PermissionsService {
         };
     }
 
+    async update(id: number, updatePermissionDto: UpdatePermissionDto) {
+        const checkPermission = await this._prisma.permission.findUnique({
+            where: {
+                id: id,
+            },
+        });
+
+        if (!checkPermission) {
+            throw new HttpException('Permission not found', HttpStatus.BAD_REQUEST);
+        }
+
+        const checkSlug = await this._prisma.permission.findFirst({
+            where: {
+                slug: updatePermissionDto.slug,
+                NOT: {
+                    id: id,
+                },
+            },
+
+        });
+
+        if (checkSlug) {
+            throw new HttpException('Slug already exists', HttpStatus.BAD_REQUEST);
+        }
+
+
+        const permission = await this._prisma.permission.update({
+            where: { id },
+            data: {
+                name: updatePermissionDto.name,
+                slug: updatePermissionDto.slug,
+                group: updatePermissionDto.group,
+            },
+        });
+        return {
+            data: permission,
+            message: 'Permission updated successfully',
+        };
+    }
+
+    async remove(id: number) {
+
+        const permission = await this._prisma.permission.findUnique({
+            where: {
+                id: id,
+            },
+        });
+
+        if (!permission) {
+            throw new HttpException('Permission not found', HttpStatus.BAD_REQUEST);
+        }
+
+        await this._prisma.permission.delete({
+            where: { id },
+        });
+
+
+        return {
+            message: 'Permission deleted successfully',
+        };
+    }
+
+    async changeStatus(id: number) {
+
+        const permission = await this._prisma.permission.findUnique({
+            where: {
+                id: id,
+            },
+        });
+
+        if (!permission) {
+            throw new HttpException('Permission not found', HttpStatus.BAD_REQUEST);
+        }
+
+        await this._prisma.permission.update({
+            where: {
+                id: id,
+            },
+            data: {
+                isActive: !permission.isActive,
+            },
+        });
+
+        return {
+            message: 'Status Changed successfully',
+        };
+    }
+
+
+
     // getAllPermissions
     async getAllPermissions() {
         try {
             const permissions = await this._prisma.permission.findMany({
-                orderBy: {
-                    group: 'asc',
-                    name: 'asc',
-                },
+                orderBy: [
+                    { group: 'asc' },
+                    { name: 'asc' }
+                ],
             });
 
             const groupedPermissions = [];

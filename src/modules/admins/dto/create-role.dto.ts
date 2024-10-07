@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
-import { IsArray, IsBoolean, IsNotEmpty } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsBoolean, IsNotEmpty } from 'class-validator';
 
 export class CreateRoleDto {
     @ApiProperty({
@@ -16,9 +17,10 @@ export class CreateRoleDto {
         example: 'true or false',
         description: 'Role is active or not',
     })
+    @Transform(({ value }) => value.toString() === 'true')
     @IsNotEmpty()
     @IsBoolean()
-    is_active: boolean;
+    isActive: boolean;
 
     @ApiProperty({
         type: 'array',
@@ -26,7 +28,16 @@ export class CreateRoleDto {
         description: 'The permissions of the role',
         isArray: true,
     })
-    @IsNotEmpty()
+    @Transform(({ value }) => {
+        if (typeof value === 'string') {
+            const permissions = JSON.parse(value);
+            return permissions.map((permission: string) => Number(permission));
+        }
+        return value;
+    })
     @IsArray()
+    @ArrayNotEmpty({
+        message: 'At least 1 permission is required',
+    })
     permissions: number[];
 }

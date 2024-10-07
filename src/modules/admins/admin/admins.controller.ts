@@ -9,6 +9,8 @@ import {
     SetMetadata,
     Query,
     Put,
+    UseInterceptors,
+    UploadedFile,
 } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 
@@ -20,6 +22,33 @@ import { AbilityGuard } from '@/modules/auth/ability/ability.guard';
 import { PageDto, PageOptionsDto } from '@/core/dto';
 import { AdminResponse } from '../interface/AdminResponse';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+
+import { diskStorage } from 'multer';
+import * as fs from "node:fs";
+import * as path from "node:path";
+
+export const storageAdmin = {
+    storage: diskStorage({
+        destination: "./public/uploads/admins",
+        filename: (req, file, cb) => {
+            const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+            const extension: string = path.extname(file.originalname);
+            const filename = `${uniqueSuffix}${extension}`;
+            // const filename: string = `${uniqueSuffix}${extension}`;
+            cb(null, filename);
+        },
+    }),
+};
+
+const deleteFile = (path: string) => {
+    fs.unlink(path, (err) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+    });
+};
 
 @ApiTags('admins')
 @Controller({ version: '1', path: 'admins' })
@@ -40,10 +69,23 @@ export class AdminsController {
     }
 
     @Post()
-    @ApiResponse({})
+    @ApiResponse({
+        status: 201,
+        description: 'The record has been successfully created.',
+    })
     @SetMetadata('permissions', ['admin.create'])
-    async create(@Body() createAdminDto: CreateAdminDto) {
-        return this._adminsService.create(createAdminDto);
+    @UseInterceptors(FileInterceptor("image", storageAdmin))
+    async create(
+        @UploadedFile()
+        image: Express.Multer.File,
+        @Body() createAdminDto: CreateAdminDto
+    ) {
+
+        // if (!image) {
+        //   throw new Error("Image is required");
+        // }
+
+        return this._adminsService.create(createAdminDto, image);
     }
 
     @Get(':id')
@@ -56,12 +98,16 @@ export class AdminsController {
     @Put(':id')
     @ApiResponse({})
     @SetMetadata('permissions', ['admin.update'])
+    @UseInterceptors(FileInterceptor("image", storageAdmin))
     async update(
         @Param('id') id: number,
+        @UploadedFile()
+        image: Express.Multer.File,
         @Body() updateAdminDto: UpdateAdminDto,
     ) {
-        return this._adminsService.update(+id, updateAdminDto);
+        return this._adminsService.update(+id, updateAdminDto, image);
     }
+
 
     @Delete(':id')
     @ApiResponse({})
@@ -72,7 +118,7 @@ export class AdminsController {
 
     @Post(':id/status')
     @ApiResponse({})
-    @SetMetadata('permissions', ['admin.active'])
+    @SetMetadata('permissions', ['admin.status'])
     async changeStatus(@Param('id') id: number) {
         return this._adminsService.changeStatus(+id);
     }

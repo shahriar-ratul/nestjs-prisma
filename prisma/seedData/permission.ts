@@ -5,6 +5,13 @@ export const permissionData = [
     slug: "dashboard",
     group: "dashboard",
   },
+  // module
+  {
+    name: "Admin Module",
+    displayName: "Admin Module",
+    slug: "module.admin",
+    group: "module",
+  },
   // admin
   {
     name: "Admin View",

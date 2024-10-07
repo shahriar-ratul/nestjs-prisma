@@ -94,7 +94,7 @@ export class AdminsService {
     }
 
     // add admin
-    async create(createAdminDto: CreateAdminDto) {
+    async create(createAdminDto: CreateAdminDto, file: Express.Multer.File) {
         const checkAdmin = await this._prisma.admin.findFirst({
             where: {
                 OR: [
@@ -120,6 +120,9 @@ export class AdminsService {
                 mobile: createAdminDto.mobile,
                 password: createPassword,
                 isActive: createAdminDto.isActive,
+                photo: file ? file.path : null,
+                joinedDate: createAdminDto.joinedDate || new Date(),
+                dob: createAdminDto.dob || null,
             },
         });
 
@@ -218,7 +221,7 @@ export class AdminsService {
 
     }
 
-    async update(id: number, updateAdminDto: UpdateAdminDto) {
+    async update(id: number, updateAdminDto: UpdateAdminDto, file: Express.Multer.File) {
         const data = await this._prisma.admin.findFirst({
             where: {
                 id: id,
@@ -257,6 +260,11 @@ export class AdminsService {
                 username: updateAdminDto.username ? updateAdminDto.username : data.username,
                 mobile: updateAdminDto.mobile ? updateAdminDto.mobile : data.mobile,
                 isActive: updateAdminDto.isActive ? updateAdminDto.isActive : data.isActive,
+                photo: file ? file.path : data.photo,
+                joinedDate: updateAdminDto.joinedDate ? updateAdminDto.joinedDate : data.joinedDate,
+                dob: updateAdminDto.dob ? updateAdminDto.dob : data.dob,
+                firstName: updateAdminDto.firstName ? updateAdminDto.firstName : data.firstName,
+                lastName: updateAdminDto.lastName ? updateAdminDto.lastName : data.lastName,
 
             },
         });
@@ -371,6 +379,12 @@ export class AdminsService {
         if (!admin) {
             throw new HttpException('Admin not found', HttpStatus.BAD_REQUEST);
         }
+
+
+        if (admin.username === 'super_admin') {
+            throw new HttpException('SuperAdmin status cannot be changed', HttpStatus.BAD_REQUEST);
+        }
+
 
 
         await this._prisma.admin.update({
