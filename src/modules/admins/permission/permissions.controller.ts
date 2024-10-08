@@ -17,8 +17,8 @@ import { PageDto, PageOptionsDto } from '@/core/dto';
 import { AbilityGuard } from '@/modules/auth/ability/ability.guard';
 import { CreatePermissionDto } from '../dto/create-permission.dto';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
-import { PermissionResponse } from '../interface/PermissionResponse';
 import { UpdatePermissionDto } from '../dto/update-permission.dto';
+import { Permission } from '@prisma/client';
 
 @ApiTags('permissions')
 @Controller({
@@ -35,7 +35,7 @@ export class PermissionsController {
     @SetMetadata('permissions', ['permission.view'])
     async findAll(
         @Query() pageOptionsDto: PageOptionsDto,
-    ): Promise<PageDto<PermissionResponse>> {
+    ): Promise<PageDto<Permission>> {
         return this._permissionsService.findAll(pageOptionsDto);
     }
 

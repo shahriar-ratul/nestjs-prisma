@@ -28,8 +28,8 @@ CREATE TABLE `Admin` (
 CREATE TABLE `Permission` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
-    `displayName` VARCHAR(191) NULL,
     `slug` VARCHAR(191) NOT NULL,
+    `groupOrder` INTEGER NOT NULL,
     `group` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
@@ -45,7 +45,6 @@ CREATE TABLE `Permission` (
 CREATE TABLE `Role` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
-    `displayName` VARCHAR(191) NULL,
     `slug` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,

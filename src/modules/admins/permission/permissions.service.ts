@@ -2,15 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PageDto, PageMetaDto, PageOptionsDto } from '@/core/dto';
 import { CreatePermissionDto } from '../dto/create-permission.dto';
 import { PrismaService } from '@/modules/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
-import { PermissionResponse } from '../interface/PermissionResponse';
+import { Permission, Prisma } from '@prisma/client';
 import { UpdatePermissionDto } from '../dto/update-permission.dto';
 
 @Injectable()
 export class PermissionsService {
     constructor(private readonly _prisma: PrismaService) { }
 
-    async findAll(query: PageOptionsDto): Promise<PageDto<PermissionResponse>> {
+    async findAll(query: PageOptionsDto): Promise<PageDto<Permission>> {
         const limit: number = query.limit || 10;
         const page: number = query.page || 1;
         const skip: number = (page - 1) * limit;
@@ -42,11 +41,6 @@ export class PermissionsService {
         ]);
 
 
-        // const transformedResult = items.map((item) => {
-        //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        //   delete item.password;
-        //   return item;
-        // });
 
         const pageOptionsDto = {
             limit: limit,
@@ -65,12 +59,21 @@ export class PermissionsService {
 
     }
 
-    async findOne(id: number): Promise<PermissionResponse> {
-        return await this._prisma.permission.findUnique({
+    async findOne(id: number): Promise<{ message: string, item: Permission }> {
+        const item = await this._prisma.permission.findUnique({
             where: {
                 id: id,
             },
         });
+
+        if (!item) {
+            throw new HttpException('Permission not found', HttpStatus.BAD_REQUEST);
+        }
+
+        return {
+            message: 'Permission fetched successfully',
+            item: item,
+        };
     }
 
     async create(createPermissionDto: CreatePermissionDto) {
@@ -95,6 +98,10 @@ export class PermissionsService {
                 name: createPermissionDto.name,
                 slug: createPermissionDto.slug,
                 group: createPermissionDto.group,
+                isActive: createPermissionDto.isActive,
+                description: createPermissionDto.description,
+                groupOrder: createPermissionDto.groupOrder,
+
             },
         });
 
@@ -136,6 +143,9 @@ export class PermissionsService {
                 name: updatePermissionDto.name,
                 slug: updatePermissionDto.slug,
                 group: updatePermissionDto.group,
+                isActive: updatePermissionDto.isActive,
+                description: updatePermissionDto.description,
+                groupOrder: updatePermissionDto.groupOrder,
             },
         });
         return {
@@ -198,8 +208,11 @@ export class PermissionsService {
     async getAllPermissions() {
         try {
             const permissions = await this._prisma.permission.findMany({
+                where: {
+                    isActive: true,
+                },
                 orderBy: [
-                    { group: 'asc' },
+                    { groupOrder: 'asc' },
                     { name: 'asc' }
                 ],
             });
@@ -207,7 +220,7 @@ export class PermissionsService {
             const groupedPermissions = [];
 
             for (const permission of permissions) {
-                const { group, name } = permission;
+                const { group, name, groupOrder } = permission;
 
                 if (!group || !name) {
                     console.error('Invalid permission object:', permission);
@@ -215,12 +228,13 @@ export class PermissionsService {
                 }
 
                 let existingGroup = groupedPermissions.find(
-                    (groupItem) => groupItem.groupName === group,
+                    (groupItem) => groupItem.groupOrder === groupOrder,
                 );
 
                 if (!existingGroup) {
                     existingGroup = {
                         groupName: group,
+                        groupOrder: groupOrder,
                         permissions: [],
                     };
                     groupedPermissions.push(existingGroup);
@@ -229,18 +243,14 @@ export class PermissionsService {
                 existingGroup.permissions.push(permission);
             }
 
-            // Sort the groupedPermissions array alphabetically by group name
-            groupedPermissions.sort((a, b) => a.groupName.localeCompare(b.groupName));
+            // Sort the groupedPermissions array by groupOrder
+            groupedPermissions.sort((a, b) => a.groupOrder - b.groupOrder);
 
             // Sort the permissions in each group alphabetically by name
             for (const group of groupedPermissions) {
                 group.permissions.sort((a, b) => a.name.localeCompare(b.name));
             }
 
-            // console.log(groupedPermissions); // For debugging
-
-
-            // console.log(groupedPermissions);
             return {
                 message: 'Permissions retrieved successfully',
                 total: permissions.length,

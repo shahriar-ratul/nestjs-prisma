@@ -12,7 +12,7 @@ async function main() {
   console.log('Start seeding ...');
 
   for (const permissionItem of permissionData) {
-    const { slug, group, name } = permissionItem;
+    const { slug, group, name, groupOrder } = permissionItem;
 
     await prisma.permission.upsert({
       where: { slug },
@@ -21,6 +21,7 @@ async function main() {
         slug,
         group,
         name,
+        groupOrder,
       },
     });
     console.log(`Created permission with slug: ${slug}`);
@@ -41,9 +42,7 @@ async function main() {
           name,
           slug,
           description,
-          displayName,
           isActive
-
         },
       });
 
@@ -125,9 +124,9 @@ async function main() {
   }
 
 
-  // Create 100 users
+  // Create 20 users
 
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 20; i++) {
     const user = await prisma.admin.create({
       data: {
         email: faker.internet.email(),

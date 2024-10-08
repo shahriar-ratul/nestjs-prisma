@@ -1,7 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { AdminPermission, Permission, PermissionRole } from "@prisma/client";
+import type { AdminRole, Permission, PermissionRole, Role } from "@prisma/client";
 
 export class PermissionEntity implements Permission {
+    name: string;
+    slug: string;
+    group: string;
+    updatedAt: Date;
+    groupOrder: number;
     displayName: string;
     description: string;
     isActive: boolean;
@@ -10,20 +15,4 @@ export class PermissionEntity implements Permission {
 
     @ApiProperty({ description: 'When permission was created' })
     createdAt: Date;
-
-    @ApiProperty({ description: 'When permission was updated' })
-    updatedAt: Date;
-
-    @ApiProperty({ type: 'string', description: 'permission name' })
-    name: string;
-
-    @ApiProperty({ type: 'string', description: 'permission slug' })
-    slug: string;
-
-    @ApiProperty({ type: 'string', description: 'permission group' })
-    group: string;
-
-    roles: PermissionRole[];
-
-    admins: AdminPermission[];
 }
